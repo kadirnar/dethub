@@ -21,4 +21,3 @@ def download_yolov5n_model(destination_path: Optional[str] = None):
             Yolov5TestConstants.YOLOV5N_MODEL_URL,
             destination_path,
         )
-
