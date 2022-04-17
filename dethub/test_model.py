@@ -1,6 +1,6 @@
-from pyexpat import model
 import unittest
-from model_download import Yolov5TestConstants, download_yolov5n_model
+from utils.model_download import Yolov5TestConstants, download_yolov5n_model
+
 MODEL_DEVICE = "cpu"
 CONFIDENCE_THRESHOLD = 0.3
 IMAGE_SIZE = 320
@@ -16,7 +16,7 @@ class TestYolov5Model(unittest.TestCase):
             model_path=Yolov5TestConstants.YOLOV5N_MODEL_PATH,
             confidence_threshold=CONFIDENCE_THRESHOLD,
             device=MODEL_DEVICE,
-            load_at_init= True,
+            load_at_init=True,
         )
 
         self.assertNotEqual(yolov5_detection_model.model, None)

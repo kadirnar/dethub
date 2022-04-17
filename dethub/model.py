@@ -1,5 +1,4 @@
 from typing import Optional
-import numpy as np
 
 
 class DetectionModel:
@@ -28,16 +27,12 @@ class DetectionModel:
 
 class Yolov5DetModel(DetectionModel):
     def load_model(self):
-        """
-        Detection model is initialized and set to self.model.
-        """
         try:
             import yolov5
         except ImportError:
             raise ImportError(
                 'Please run "pip install -U yolov5" ' "to install YOLOv5 first for YOLOv5 inference.")
 
-        # set model
         try:
             model = yolov5.load(self.model_path, device=self.device)
             model.conf = self.confidence_threshold
