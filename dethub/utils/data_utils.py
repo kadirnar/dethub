@@ -1,10 +1,34 @@
+from os import path
+from pathlib import Path
+import urllib.request
+from typing import Optional
+import cv2
+
+
 def read_image(image_path: str):
-    """
-    Loads image as numpy array from given path.
-    """
-    import cv2
-    # read image
-    image = cv2.imread(image_path)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    # return image
-    return image
+    return cv2.imread(image_path)
+
+
+def download_from_url(from_url: str, to_path: str):
+
+    Path(to_path).parent.mkdir(parents=True, exist_ok=True)
+
+    if not path.exists(to_path):
+        urllib.request.urlretrieve(
+            from_url,
+            to_path,
+        )
+
+
+def download_yolov5n_model(destination_path: Optional[str] = None):
+    YOLOV5N_MODEL_URL = "https://github.com/ultralytics/yolov5/releases/download/v6.0/yolov5n.pt"
+    YOLOV5N_MODEL_PATH = "dethub/yolov5/yolov5n.pt"
+
+    if destination_path is None:
+        destination_path = YOLOV5N_MODEL_PATH
+
+    Path(destination_path).parent.mkdir(parents=True, exist_ok=True)
+
+    if not path.exists(destination_path):
+        urllib.request.urlretrieve(YOLOV5N_MODEL_URL, destination_path,
+                                   )
