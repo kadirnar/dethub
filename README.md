@@ -1,7 +1,7 @@
 <div align="center">
-<h1>
+<h2>
   DetHub: Object Detection and Classification Model Hub
-</h1>
+</h2>
 <img src="doc/pytorch.jpg" alt="Yolite" width="700">
 </div>
 
