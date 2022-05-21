@@ -36,3 +36,10 @@ model.yolov5_visualization(img)
 ```
 #### Output:
 <img src="doc/yolov5_prediction.jpg" alt="Yolov5" width="800">
+
+## TODO
+- [ ] Torchvision will simplify.
+- [ ] Detectron2 will be added.
+- [ ] TfHub will be added.
+- [ ] Torch Hub will be added.
+- [ ] Hugging Face will be added.
