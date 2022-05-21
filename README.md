@@ -1,8 +1,8 @@
 <div align="center">
 <h1>
-  DetHub: Object Detection Model Hub
+Object Detection and Classification Model Hub
 </h1>
-<img src="doc/pytorch_logo.png" alt="Yolite" width="700">
+<img src="doc/pytorch.jpg" alt="Yolite" width="700">
 </div>
 
 
@@ -36,3 +36,10 @@ model.yolov5_visualization(img)
 ```
 #### Output:
 <img src="doc/yolov5_prediction.jpg" alt="Yolov5" width="800">
+
+## TODO
+- [ ] Torchvision will simplify.
+- [ ] Detectron2 will be added.
+- [ ] TfHub will be added.
+- [ ] Torch Hub will be added.
+- [ ] Hugging Face will be added.
