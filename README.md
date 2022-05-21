@@ -2,7 +2,7 @@
 <h1>
   DetHub: Object Detection Model Hub
 </h1>
-<img src="doc/pytorch.png" alt="Yolite" width="800">
+<img src="doc/pytorch_logo.png" alt="Yolite" width="700">
 </div>
 ## <div align="center">Overview</div>
 
