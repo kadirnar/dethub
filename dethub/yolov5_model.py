@@ -12,8 +12,8 @@ class Yolov5DetectionModel:
         self.model = model
 
 
-    def object_prediction_list(self, image):
-        prediction = self.model(image)
+    def object_prediction_list(self, img):
+        prediction = self.model(img)
         prediction_list = []
         for _, image_predictions_in_xyxy_format in enumerate(prediction.xyxy):
             for pred in image_predictions_in_xyxy_format.cpu().detach().numpy():
