@@ -1,4 +1,4 @@
-class Yolov5DetectionModel:
+class Yolov5Model:
     def __init__(self, model_path, confidence_threshold, device):
         self.model_path = model_path
         self.confidence_threshold = confidence_threshold
@@ -25,7 +25,7 @@ class Yolov5DetectionModel:
 
         self.prediction_list = prediction_list
         
-    def yolov5_visualization(self, img):
+    def visualization(self, img):
         import cv2
         
         prediction_boxes = [pred['bbox'] for pred in self.prediction_list]
@@ -34,8 +34,8 @@ class Yolov5DetectionModel:
             score = self.prediction_list[0]['score']
             label = self.prediction_list[0]['category_name']
             cv2.rectangle(img, (x1, y1), (x2, y2), (0, 0, 255), 2)
-            cv2.rectangle(img, (x1, y1-10), (x1 + 70, y1), (0, 0, 255), -1)
-            cv2.putText(img, f"{label} {score:.2f}", (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255, 255), 1)
+            cv2.rectangle(img, (x1, y1 - 20), (x2, y1), (0, 0, 255), -1)
+            cv2.putText(img, f"{label} {score:.2f}", (x1, y1), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255,255, 255), 2)
         cv2.imshow("img", img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
