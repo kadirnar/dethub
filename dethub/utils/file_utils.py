@@ -19,8 +19,8 @@ class ModelDownload:
 
 
     def yolov5n(destination_path: Optional[str] = None):
-        YOLOV5N_MODEL_URL = ("https://github.com/ultralytics/yolov5/releases/download/v6.0/yolov5x.pt")
-        YOLOV5N_MODEL_PATH = "dethub/models/yolov5/yolov5x.pt"
+        YOLOV5N_MODEL_URL = ("https://github.com/ultralytics/yolov5/releases/download/v6.0/yolov5n.pt")
+        YOLOV5N_MODEL_PATH = "dethub/models/yolov5/yolov5n.pt"
 
         if destination_path is None:
             destination_path = YOLOV5N_MODEL_PATH
