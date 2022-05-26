@@ -2,7 +2,7 @@
 <h1>
 DetHub: Object Detection Model Hub
 </h1>
-<img src="doc/torchvision_prediction.jpg" alt="Yolite" width="700">
+<img src="doc/torchvision_prediction.jpg" alt="Yolite" width="800">
 </div>
 
 ### Yolov5 Object Prediction and Visualization
@@ -51,6 +51,7 @@ tfhub_predict(img_file, model_file, "cpu", 0.4, label_file)
 ]
 ```
 <img src="doc/tfhub_prediction.jpg" alt="TfHub" width="800">
+
 ## TODO
 - [ ] Torchvision will simplify.
 - [ ] Detectron2 will be added.
