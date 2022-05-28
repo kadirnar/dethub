@@ -15,6 +15,7 @@ class DetectionModel:
         self.model = None
         self.load_model()
         
+    
     def get_image(self, img):
         """
         Returns a tensor of the image.
@@ -318,7 +319,6 @@ class Torchvision(DetectionModel):
         cv2.waitKey(0)
         cv2.destroyAllWindows()
         
-
 class TfHub(DetectionModel):
     def get_image(self, img):
         import tensorflow as tf

@@ -53,10 +53,7 @@ tfhub_predict(img_file, model_file, "cpu", 0.4, label_file)
 <img src="doc/tfhub_prediction.jpg" alt="TfHub" width="800">
 
 ## TODO
-- [ ] Torchvision will simplify.
 - [ ] Detectron2 will be added.
-- [ ] TfHub will be added.
-- [ ] Torch Hub will be added.
 - [ ] Hugging Face will be added.
 - [ ] Visualization and model files will be made more functional.
 
