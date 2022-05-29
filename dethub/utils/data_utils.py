@@ -53,6 +53,12 @@ def download(url: str, save_path: str):
     create_dir(os.path.dirname(save_path))
     gdown.download(url, save_path, quiet=False)
 
+def imshow(img, title=None):
+    import cv2
+    cv2.imshow(title, img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+
 
 COCO_CLASSES = [
     "__background__",
