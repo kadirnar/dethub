@@ -1,11 +1,11 @@
-from transformers import AutoConfig, AutoModelForObjectDetection
-from torchvision import transforms as T
+from regex import P
+from transformers import AutoModelForObjectDetection, AutoConfig
+from utils.data_utils import numpy_to_torch, imshow
 import torch
-from postprocces.utils import post_process
 import cv2
-import matplotlib.pyplot as plt
-import numpy as np
-from utils.data_utils import numpy_to_torch, torch_to_numpy, imshow
+from postprocces.utils import post_process
+from pybboxes import BoundingBox
+from PIL import Image
 
 
 threshold = 0.5
@@ -18,12 +18,11 @@ config = AutoConfig.from_pretrained("facebook/detr-resnet-50")
 model = AutoModelForObjectDetection.from_config(config)
 
 outputs = model(img)
-#output_dict = post_process(outputs, target_sizes)[0]
+output_dict = post_process(outputs, target_sizes)[0]
 img = img.squeeze().permute(1, 2, 0).cpu().numpy()
 
-#scores = output_dict["scores"].detach().cpu().numpy()
-#boxes = output_dict["boxes"].detach().cpu().numpy()
-#labels = output_dict["labels"].detach().cpu().numpy()
+scores = output_dict["scores"].detach().cpu().numpy()
+boxes = output_dict["boxes"].detach().cpu().numpy()
+labels = output_dict["labels"].detach().cpu().numpy()
 
-pred_boxes = outputs.pred_boxes.detach().cpu().numpy()
-logits = outputs.logits.detach().cpu().numpy()
+
