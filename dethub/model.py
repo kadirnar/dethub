@@ -463,6 +463,6 @@ class TfHub(DetectionModel):
             cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
             cv2.putText(img, text, (x1, y1 + txt_size[1] + 1), font, 0.4, txt_color, 1, cv2.LINE_AA)
         
-        cv2.imwrite("result.jpg", img)
+        cv2.imshow('image', img)
         cv2.waitKey(0)
         cv2.destroyAllWindows()
