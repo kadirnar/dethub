@@ -1,5 +1,6 @@
 def numpy_to_torch(img):
     import torch
+
     img = img.transpose((2, 0, 1))
     img = torch.from_numpy(img).float()
     if img.max() > 1:
@@ -16,8 +17,8 @@ def torch_to_numpy(img):
 
 
 def read_image(img):
-    import numpy as np
     import cv2
+    import numpy as np
 
     if type(img) == str:
         img = cv2.imread(img)
@@ -42,19 +43,23 @@ def read_image(img):
 
 def create_dir(_dir):
     import os
+
     if not os.path.exists(_dir):
         os.makedirs(_dir)
 
 
 def download(url: str, save_path: str):
-    import gdown
     import os
+
+    import gdown
 
     create_dir(os.path.dirname(save_path))
     gdown.download(url, save_path, quiet=False)
 
+
 def imshow(img, title=None):
     import cv2
+
     cv2.imshow(title, img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()

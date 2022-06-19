@@ -1,0 +1,2 @@
+model_name: https://tfhub.dev/tensorflow/efficientdet/d0/1
+num_classes: 91
