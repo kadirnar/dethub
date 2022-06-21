@@ -1,3 +1,6 @@
+import numpy as np
+
+
 def numpy_to_torch(img):
     import torch
 
@@ -57,12 +60,28 @@ def download(url: str, save_path: str):
     gdown.download(url, save_path, quiet=False)
 
 
-def imshow(img, title=None):
+def imshow(img):
     import cv2
 
-    cv2.imshow(title, img)
+    cv2.imshow("img", img)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
+
+
+def resize(array, size):
+    import tensorflow as tf
+
+    return tf.image.resize(array, [size, size]).numpy()
+
+
+def to_float_tensor(image: np.ndarray):
+    import tensorflow as tf
+
+    img_load = tf.keras.preprocessing.image.load_img(image)
+    img_array = tf.keras.preprocessing.image.img_to_array(img_load)
+    img_array = tf.expand_dims(img_array, 0)
+    img_array = tf.cast(img_array, tf.uint8)
+    return img_array
 
 
 COCO_CLASSES = [

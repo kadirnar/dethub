@@ -3,16 +3,14 @@ import numpy as np
 
 
 def vis(img, boxes, scores, conf=0.5, class_names=None):
-
     for i in range(len(boxes)):
         x1, y1, x2, y2 = boxes[0:4]
-        score = scores
-        if score < conf:
+        if scores < conf:
             continue
-
+        breakpoint()
         color = (_COLORS[i % len(_COLORS)][::-1] * 255).astype(np.uint8)
         color = (int(color[0]), int(color[1]), int(color[2]))
-        text = "{} {:.2f}".format(class_names, score)
+        text = "{} {:.2f}".format(class_names, scores)
         txt_color = (0, 0, 0) if np.mean(_COLORS[i % len(_COLORS)]) > 0.5 else (255, 255, 255)
         font = cv2.FONT_HERSHEY_SIMPLEX
         txt_size = cv2.getTextSize(text, font, 0.4, 1)[0]

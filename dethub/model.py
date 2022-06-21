@@ -1,5 +1,8 @@
 from typing import Optional
 
+from dethub.utils.data_utils import imshow
+from dethub.utils.visualize import vis
+
 
 class DetectionModel:
     def __init__(
@@ -71,7 +74,6 @@ class Yolov5(DetectionModel):
                 )
 
         self.prediction_list = prediction_list
-        return prediction_list
 
     def visualization(self, img):
         from dethub.utils.visualize import imshow, vis
@@ -152,320 +154,44 @@ class Torchvision(DetectionModel):
 
 
 class TensorflowHub(DetectionModel):
-    def get_image(self, img):
-        import tensorflow as tf
-
-        img_load = tf.keras.preprocessing.image.load_img(img)
-        img_array = tf.keras.preprocessing.image.img_to_array(img_load)
-        img_array = tf.expand_dims(img_array, 0)
-        img_array = tf.cast(img_array, tf.uint8)
-        return img_array
-
-    def get_label(self):
-        label = []
-        for line in open(self.label_file):
-            label.append(line.strip())
-        return label
-
     def load_model(self):
+        import tensorflow as tf
         import tensorflow_hub as hub
 
-        model = hub.load(self.model_path)
-        self.model = model
+        with tf.device(self.device):
+            self.model = hub.load(self.model_path)
 
-    def object_prediction_list(self, img):
-        detector_output = self.model(self.get_image(img))
-        boxes = detector_output["detection_boxes"][0]
-        scores = detector_output["detection_scores"][0]
-        class_names = detector_output["detection_classes"][0]
-        prediction_list = []
-        for i, box in enumerate(boxes):
-            if scores[i] > self.confidence_threshold:
-                prediction_list.append((box, class_names[i], scores[i]))
-        self.prediction_list = prediction_list
-        return self.prediction_list
-
-    def visualization(self, img):
+    def object_prediction_list(self, image):
         import cv2
-        import numpy as np
+        import tensorflow as tf
 
-        from dethub.utils.visualize import _COLORS
+        from dethub.utils.data_utils import COCO_CLASSES, resize, to_float_tensor
 
-        img = self.get_image(img).numpy()[0]
-        img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
-        boxes, class_names, scores = zip(*self.prediction_list)
-        _COLORS = (
-            np.array(
-                [
-                    0.000,
-                    0.447,
-                    0.741,
-                    0.850,
-                    0.325,
-                    0.098,
-                    0.929,
-                    0.694,
-                    0.125,
-                    0.494,
-                    0.184,
-                    0.556,
-                    0.466,
-                    0.674,
-                    0.188,
-                    0.301,
-                    0.745,
-                    0.933,
-                    0.635,
-                    0.078,
-                    0.184,
-                    0.300,
-                    0.300,
-                    0.300,
-                    0.600,
-                    0.600,
-                    0.600,
-                    1.000,
-                    0.000,
-                    0.000,
-                    1.000,
-                    0.500,
-                    0.000,
-                    0.749,
-                    0.749,
-                    0.000,
-                    0.000,
-                    1.000,
-                    0.000,
-                    0.000,
-                    0.000,
-                    1.000,
-                    0.667,
-                    0.000,
-                    1.000,
-                    0.333,
-                    0.333,
-                    0.000,
-                    0.333,
-                    0.667,
-                    0.000,
-                    0.333,
-                    1.000,
-                    0.000,
-                    0.667,
-                    0.333,
-                    0.000,
-                    0.667,
-                    0.667,
-                    0.000,
-                    0.667,
-                    1.000,
-                    0.000,
-                    1.000,
-                    0.333,
-                    0.000,
-                    1.000,
-                    0.667,
-                    0.000,
-                    1.000,
-                    1.000,
-                    0.000,
-                    0.000,
-                    0.333,
-                    0.500,
-                    0.000,
-                    0.667,
-                    0.500,
-                    0.000,
-                    1.000,
-                    0.500,
-                    0.333,
-                    0.000,
-                    0.500,
-                    0.333,
-                    0.333,
-                    0.500,
-                    0.333,
-                    0.667,
-                    0.500,
-                    0.333,
-                    1.000,
-                    0.500,
-                    0.667,
-                    0.000,
-                    0.500,
-                    0.667,
-                    0.333,
-                    0.500,
-                    0.667,
-                    0.667,
-                    0.500,
-                    0.667,
-                    1.000,
-                    0.500,
-                    1.000,
-                    0.000,
-                    0.500,
-                    1.000,
-                    0.333,
-                    0.500,
-                    1.000,
-                    0.667,
-                    0.500,
-                    1.000,
-                    1.000,
-                    0.500,
-                    0.000,
-                    0.333,
-                    1.000,
-                    0.000,
-                    0.667,
-                    1.000,
-                    0.000,
-                    1.000,
-                    1.000,
-                    0.333,
-                    0.000,
-                    1.000,
-                    0.333,
-                    0.333,
-                    1.000,
-                    0.333,
-                    0.667,
-                    1.000,
-                    0.333,
-                    1.000,
-                    1.000,
-                    0.667,
-                    0.000,
-                    1.000,
-                    0.667,
-                    0.333,
-                    1.000,
-                    0.667,
-                    0.667,
-                    1.000,
-                    0.667,
-                    1.000,
-                    1.000,
-                    1.000,
-                    0.000,
-                    1.000,
-                    1.000,
-                    0.333,
-                    1.000,
-                    1.000,
-                    0.667,
-                    1.000,
-                    0.333,
-                    0.000,
-                    0.000,
-                    0.500,
-                    0.000,
-                    0.000,
-                    0.667,
-                    0.000,
-                    0.000,
-                    0.833,
-                    0.000,
-                    0.000,
-                    1.000,
-                    0.000,
-                    0.000,
-                    0.000,
-                    0.167,
-                    0.000,
-                    0.000,
-                    0.333,
-                    0.000,
-                    0.000,
-                    0.500,
-                    0.000,
-                    0.000,
-                    0.667,
-                    0.000,
-                    0.000,
-                    0.833,
-                    0.000,
-                    0.000,
-                    1.000,
-                    0.000,
-                    0.000,
-                    0.000,
-                    0.167,
-                    0.000,
-                    0.000,
-                    0.333,
-                    0.000,
-                    0.000,
-                    0.500,
-                    0.000,
-                    0.000,
-                    0.667,
-                    0.000,
-                    0.000,
-                    0.833,
-                    0.000,
-                    0.000,
-                    1.000,
-                    0.000,
-                    0.000,
-                    0.000,
-                    0.143,
-                    0.143,
-                    0.143,
-                    0.286,
-                    0.286,
-                    0.286,
-                    0.429,
-                    0.429,
-                    0.429,
-                    0.571,
-                    0.571,
-                    0.571,
-                    0.714,
-                    0.714,
-                    0.714,
-                    0.857,
-                    0.857,
-                    0.857,
-                    0.000,
-                    0.447,
-                    0.741,
-                    0.314,
-                    0.717,
-                    0.741,
-                    0.50,
-                    0.5,
-                    0,
-                ]
-            )
-            .astype(np.float32)
-            .reshape(-1, 3)
-        )
+        img = to_float_tensor(image)
 
-        for i in range(len(boxes)):
-            box = boxes[i]
-            category_name = self.get_label()[int(class_names[i] - 1)]
-            x1, y1, x2, y2 = box[1], box[0], box[3], box[2]
-            x1, y1, x2, y2 = (
-                int(x1 * img.shape[1]),
-                int(y1 * img.shape[0]),
-                int(x2 * img.shape[1]),
-                int(y2 * img.shape[0]),
-            )
-            score = scores[i]
-            color = (_COLORS[i % len(_COLORS)][::-1] * 255).astype(np.uint8)
-            color = (int(color[0]), int(color[1]), int(color[2]))
-            text = "{} {:.2f}".format(category_name, score)
-            txt_color = (0, 0, 0) if np.mean(_COLORS[i % len(_COLORS)]) > 0.5 else (255, 255, 255)
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            txt_size = cv2.getTextSize(text, font, 0.4, 1)[0]
-            cv2.rectangle(img, (x1, y1), (x1 + txt_size[0] + 3, y1 + txt_size[1] + 3), color, -1)
-            txt_bk_color = (_COLORS[i % len(_COLORS)][::-1] * 255).astype(np.uint8)
-            txt_bk_color = (int(txt_bk_color[0]), int(txt_bk_color[1]), int(txt_bk_color[2]))
-            cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
-            cv2.putText(img, text, (x1, y1 + txt_size[1] + 1), font, 0.4, txt_color, 1, cv2.LINE_AA)
+        category_mapping = {str(i): COCO_CLASSES[i] for i in range(len(COCO_CLASSES))}
+        img = to_float_tensor(image)
+        npy_img = cv2.imread(image)
+        prediction_result = self.model(img)
 
-        cv2.imshow("image", img)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
+        self.image_height, self.image_width = img.shape[0], img.shape[1]
+        boxes = prediction_result["detection_boxes"][0].numpy()
+        scores = prediction_result["detection_scores"][0].numpy()
+        category_ids = prediction_result["detection_classes"][0].numpy()
+        with tf.device(self.device):
+            for i in range(min(boxes.shape[0], 100)):
+                if scores[i] >= self.confidence_threshold:
+                    score = float(scores[i])
+                    category_id = int(category_ids[i])
+
+                    category_names = category_mapping[str(category_id - 1)]
+                    box = [float(box) for box in boxes[i]]
+                    x1, y1, x2, y2 = (
+                        int(box[1] * self.image_width),
+                        int(box[0] * self.image_height),
+                        int(box[3] * self.image_width),
+                        int(box[2] * self.image_height),
+                    )
+                    bbox = [x1, y1, x2, y2]
+                    vis(npy_img, bbox, score, conf=self.confidence_threshold, class_names=category_names)
+            imshow(npy_img)

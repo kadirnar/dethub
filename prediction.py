@@ -45,3 +45,8 @@ def tensorflow(img, model_path, device="cpu", confidence_threshold=0.5):
     tfhub_model.model
     tfhub_model.object_prediction_list(img)
     tfhub_model.visualization(img)
+
+
+model_path = "https://tfhub.dev/tensorflow/efficientdet/d0/1"
+img = "data/highway1.jpg"
+tensorflow(img, model_path)
