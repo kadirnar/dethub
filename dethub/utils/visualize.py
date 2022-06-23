@@ -1,34 +1,6 @@
 import cv2
 import numpy as np
 
-
-def vis(img, boxes, scores, conf=0.5, class_names=None):
-    for i in range(len(boxes)):
-        x1, y1, x2, y2 = boxes[0:4]
-        if scores < conf:
-            continue
-        breakpoint()
-        color = (_COLORS[i % len(_COLORS)][::-1] * 255).astype(np.uint8)
-        color = (int(color[0]), int(color[1]), int(color[2]))
-        text = "{} {:.2f}".format(class_names, scores)
-        txt_color = (0, 0, 0) if np.mean(_COLORS[i % len(_COLORS)]) > 0.5 else (255, 255, 255)
-        font = cv2.FONT_HERSHEY_SIMPLEX
-        txt_size = cv2.getTextSize(text, font, 0.4, 1)[0]
-        cv2.rectangle(img, (x1, y1), (x1 + txt_size[0] + 3, y1 + txt_size[1] + 3), color, -1)
-        txt_bk_color = (_COLORS[i % len(_COLORS)][::-1] * 255).astype(np.uint8)
-        txt_bk_color = (int(txt_bk_color[0]), int(txt_bk_color[1]), int(txt_bk_color[2]))
-        cv2.rectangle(img, (x1, y1), (x2, y2), color, 2)
-        cv2.putText(img, text, (x1, y1 + txt_size[1] + 1), font, 0.4, txt_color, 1, cv2.LINE_AA)
-
-    return img
-
-
-def imshow(img):
-    cv2.imshow("img", img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
-
-
 _COLORS = (
     np.array(
         [
@@ -277,3 +249,9 @@ _COLORS = (
     .astype(np.float32)
     .reshape(-1, 3)
 )
+
+
+def imshow(img):
+    cv2.imshow("img", img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()

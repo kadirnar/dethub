@@ -1,20 +1,18 @@
+import cv2
+
 from dethub.utils.file_utils import ModelDownload
 
 
-def yolov5(img="data/highway1.jpg", model_path=ModelDownload.yolov5n(), device="cpu", confidence_threshold=0.5):
-    import cv2
-
+def yolov5(image, model_path, device="cpu", confidence_threshold=0.5):
     from dethub.model import Yolov5
 
-    img = cv2.imread(img)
     yolov5_model = Yolov5(
         model_path=model_path,
         device=device,
         confidence_threshold=confidence_threshold,
     )
     yolov5_model.model
-    yolov5_model.object_prediction_list(img)
-    yolov5_model.visualization(img)
+    yolov5_model.object_prediction_list(image)
 
 
 def torchvision(img, model_path, device, confidence_threshold):
@@ -47,6 +45,6 @@ def tensorflow(img, model_path, device="cpu", confidence_threshold=0.5):
     tfhub_model.visualization(img)
 
 
-model_path = "https://tfhub.dev/tensorflow/efficientdet/d0/1"
-img = "data/highway1.jpg"
-tensorflow(img, model_path)
+img = "data/highway.jpg"
+model_path = ModelDownload.yolov5n()
+pred = yolov5(img, model_path, device="cpu", confidence_threshold=0.5)
