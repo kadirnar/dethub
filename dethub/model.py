@@ -75,25 +75,7 @@ class Yolov5(DetectionModel):
 
         self.prediction_list = prediction_list
 
-    def visualization(self, img):
-        from dethub.utils.visualize import imshow, vis
-
-        prediction_boxes = [pred["bbox"] for pred in self.prediction_list]
-        for i, box in enumerate(prediction_boxes):
-            score, category_name = (
-                self.prediction_list[i]["score"],
-                self.prediction_list[i]["category_name"],
-            )
-            vis(
-                img,
-                boxes=box,
-                scores=score,
-                conf=self.confidence_threshold,
-                class_names=category_name,
-            )
-        imshow(img)
-
-
+        
 class Torchvision(DetectionModel):
     def load_model(self):
         import torch
@@ -123,36 +105,7 @@ class Torchvision(DetectionModel):
             prediction_list.append([prediction_boxes[i], prediction_class[i], prediction_score[i]])
         self.prediction_list = prediction_list
 
-        return prediction_list
-
-    def visualization(self, img):
-        import cv2
-        import numpy as np
-
-        from dethub.utils.visualize import _COLORS
-
-        pred_boxes = [i[0] for i in self.prediction_list]
-
-        for i, box in enumerate(pred_boxes):
-            score = self.prediction_list[i][2]
-            color = (_COLORS[i % len(_COLORS)][::-1] * 255).astype(np.uint8)
-            color = (int(color[0]), int(color[1]), int(color[2]))
-            text = "{}:{:.1f}%".format(self.prediction_list[i][1], score * 100)
-            txt_color = (0, 0, 0) if np.mean(_COLORS[i % len(_COLORS)]) > 0.5 else (255, 255, 255)
-            font = cv2.FONT_HERSHEY_SIMPLEX
-            txt_size = cv2.getTextSize(text, font, 0.4, 1)[0]
-            x, y, w, h = int(box[0][0]), int(box[0][1]), int(box[1][0] - box[0][0]), int(box[1][1] - box[0][1])
-            cv2.rectangle(img, (x, y), (x + w, y + h), color, 2)
-            txt_bk_color = (_COLORS[i % len(_COLORS)][::-1] * 255).astype(np.uint8)
-            txt_bk_color = (int(txt_bk_color[0]), int(txt_bk_color[1]), int(txt_bk_color[2]))
-            cv2.rectangle(img, (x, y), (x + txt_size[0] + 3, y + txt_size[1] + 3), txt_bk_color, -1)
-            cv2.putText(img, text, (x + 1, y + txt_size[1] + 1), font, 0.4, txt_color, 1, cv2.LINE_AA)
-
-        cv2.imshow("img", img)
-        cv2.waitKey(0)
-        cv2.destroyAllWindows()
-
-
+        
 class TensorflowHub(DetectionModel):
     def load_model(self):
         import tensorflow as tf
@@ -193,5 +146,3 @@ class TensorflowHub(DetectionModel):
                         int(box[2] * self.image_height),
                     )
                     bbox = [x1, y1, x2, y2]
-                    vis(npy_img, bbox, score, conf=self.confidence_threshold, class_names=category_names)
-            imshow(npy_img)
