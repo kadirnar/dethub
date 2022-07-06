@@ -1,6 +1,3 @@
-from typing import Optional
-
-
 class DetectionModel:
     def __init__(
         self,
@@ -105,10 +102,9 @@ class TensorflowHub(DetectionModel):
             self.model = hub.load(self.model_path)
 
     def object_prediction_list(self, image):
-        import cv2
         import tensorflow as tf
 
-        from dethub.utils.data_utils import COCO_CLASSES, resize, to_float_tensor
+        from dethub.utils.data_utils import COCO_CLASSES, to_float_tensor
 
         img = to_float_tensor(image)
 
