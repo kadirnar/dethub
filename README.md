@@ -10,7 +10,7 @@ DetHub: Object Detection Model Hub
 import cv2        
 img = cv2.imread('dethub/data/highway1.jpg')   
 model_path = "dethub/models/yolov5/yolov5x.pt"
-pred = torchvision_predict(img, model_file, 0.5, "cpu")
+pred = yolov5(img, model_file, 0.5, "cpu")
 ```
 #### Output:
 ```
@@ -27,7 +27,7 @@ pred = torchvision_predict(img, model_file, 0.5, "cpu")
 import cv2
 img = cv2.imread('dethub/data/highway1.jpg')   
 model_file = "models/torchvision/fasterrcnn_resnet50_fpn.pth"
-pred = torchvision_predict(img, model_file, 0.5, "cpu")
+pred = torchvision(img, model_file, 0.5, "cpu")
 ```
 #### Output:
 ```
@@ -41,7 +41,7 @@ pred = torchvision_predict(img, model_file, 0.5, "cpu")
 model_file = "https://tfhub.dev/tensorflow/efficientdet/d0/1"
 img_file = "dethub/data/highway1.jpg"
 label_file = "dethub/data/coco_label.txt"
-tfhub_predict(img_file, model_file, "cpu", 0.4, label_file)
+tensorflow(img_file, model_file, "cpu", 0.4, label_file)
 ```
 #### Output:
 ```
