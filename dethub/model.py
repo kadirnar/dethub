@@ -44,8 +44,8 @@ class Yolov5(DetectionModel):
         model.conf = self.confidence_threshold
         self.model = model
 
-    def object_prediction_list(self, img):
-        prediction = self.model(img)
+    def object_prediction_list(self, image):
+        prediction = self.model(image)
         prediction_list = []
 
         for _, image_predictions_in_xyxy_format in enumerate(prediction.xyxy):
@@ -73,24 +73,38 @@ class TorchVision(DetectionModel):
         model.eval()
         self.model = model
 
-    def object_prediction_list(self, img):
-        from dethub.utils.data_utils import COCO_CLASSES, numpy_to_torch, read_image, torch_to_numpy
+    def object_prediction_list(self, image):
+        import numpy as np
 
-        img = read_image(img)
-        img = numpy_to_torch(img)
-        prediction = self.model([img])
-        img = torch_to_numpy(img)
-        prediction_class = [COCO_CLASSES[i] for i in list(prediction[0]["labels"].numpy())]
-        prediction_boxes = [[(i[0], i[1]), (i[2], i[3])] for i in list(prediction[0]["boxes"].detach().numpy())]
-        prediction_score = list(prediction[0]["scores"].detach().numpy())
-        prediction_thresh = [prediction_score.index(x) for x in prediction_score if x > self.confidence_threshold][-1]
-        prediction_boxes = prediction_boxes[: prediction_thresh + 1]
-        prediction_class = prediction_class[: prediction_thresh + 1]
+        from dethub.utils.data_utils import COCO_CLASSES, numpy_to_torch
+
+        category_names = {str(i): COCO_CLASSES[i] for i in range(len(COCO_CLASSES))}
+        image = numpy_to_torch(image)
+        image = image.to(self.device)
+        prediction = self.model([image])
+
         prediction_list = []
+        for image_predictions in prediction:
 
-        for i in range(len(prediction_boxes)):
-            prediction_list.append([prediction_boxes[i], prediction_class[i], prediction_score[i]])
+            # get indices of boxes with score > confidence_threshold
+            scores = image_predictions["scores"].cpu().detach().numpy()
+            selected_indices = np.where(scores > self.confidence_threshold)[0]
+
+            # parse boxes, masks, scores, category_ids from predictions
+            category_ids = list(image_predictions["labels"][selected_indices].cpu().detach().numpy())
+            boxes = list(image_predictions["boxes"][selected_indices].cpu().detach().numpy())
+            scores = scores[selected_indices]
+            for ind in range(len(boxes)):
+                bbox = boxes[ind]
+                category_id = int(category_ids[ind])
+                category_name = category_names[str(int(category_ids[ind]))]
+                score = scores[ind]
+                prediction_list.append(
+                    {"bbox": bbox, "score": score, "category_name": category_name, "category_id": category_id}
+                )
+
         self.prediction_list = prediction_list
+        return prediction_list
 
 
 class TensorflowHub(DetectionModel):
@@ -104,30 +118,38 @@ class TensorflowHub(DetectionModel):
     def object_prediction_list(self, image):
         import tensorflow as tf
 
-        from dethub.utils.data_utils import COCO_CLASSES, to_float_tensor
+        from dethub.utils.data_utils import TF_COCO_CLLASES, to_float_tensor
 
-        img = to_float_tensor(image)
-
-        category_mapping = {str(i): COCO_CLASSES[i] for i in range(len(COCO_CLASSES))}
         img = to_float_tensor(image)
         prediction_result = self.model(img)
 
-        self.image_height, self.image_width = img.shape[0], img.shape[1]
+        image_height, image_width = image.shape[0], image.shape[1]
+        img = to_float_tensor(image)
+
+        category_mapping = {str(i): TF_COCO_CLLASES[i] for i in range(len(TF_COCO_CLLASES))}
+        img = to_float_tensor(image)
+        prediction_result = self.model(img)
+
         boxes = prediction_result["detection_boxes"][0].numpy()
         scores = prediction_result["detection_scores"][0].numpy()
         category_ids = prediction_result["detection_classes"][0].numpy()
+        prediction_list = []
         with tf.device(self.device):
             for i in range(min(boxes.shape[0], 100)):
                 if scores[i] >= self.confidence_threshold:
                     score = float(scores[i])
                     category_id = int(category_ids[i])
-
                     category_names = category_mapping[str(category_id - 1)]
                     box = [float(box) for box in boxes[i]]
                     x1, y1, x2, y2 = (
-                        int(box[1] * self.image_width),
-                        int(box[0] * self.image_height),
-                        int(box[3] * self.image_width),
-                        int(box[2] * self.image_height),
+                        int(box[1] * image_width),
+                        int(box[0] * image_height),
+                        int(box[3] * image_width),
+                        int(box[2] * image_height),
                     )
                     bbox = [x1, y1, x2, y2]
+                    prediction_list.append(
+                        {"bbox": bbox, "score": score, "category_name": category_names, "category_id": category_id}
+                    )
+        self.prediction_list = prediction_list
+        return prediction_list
