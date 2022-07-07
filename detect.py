@@ -1,6 +1,13 @@
 from dethub.model import *
 
 
+def pretrained_weights():
+    from dethub.utils.file_utils import ModelDownload
+
+    ModelDownload.yolov5n()
+    ModelDownload.torchvision()
+
+
 def get_prediction(image, detection_model):
     import cv2
 
@@ -24,6 +31,6 @@ def run(model_type, model_path, image_path, device="cpu", confidence_threshold=0
     get_prediction(image_path, detection_model)
 
 
-# run("torchvision", "dethub/models/torchvision/fasterrcnn_resnet50_fpn.pth", "data/highway1.jpg")
 # run('yolov5', 'dethub/models/yolov5/yolov5n.pt', 'data/highway1.jpg')
-# run('tensorflow', 'https://tfhub.dev/tensorflow/efficientdet/d0/1', 'data/highway1.jpg')
+# run("torchvision", "dethub/models/torchvision/fasterrcnn_resnet50_fpn.pth", "data/highway1.jpg")
+# run('tensorflow', 'https://tfhub.dev/tensorflow/efficientdet/d3/1', 'data/highway1.jpg')
