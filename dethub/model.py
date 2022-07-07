@@ -1,23 +1,15 @@
-from typing import Optional
-
-from dethub.utils.data_utils import imshow
-from dethub.utils.visualize import vis
-
-
 class DetectionModel:
     def __init__(
         self,
         model_path: str,
         device: str,
         confidence_threshold: float = 0.5,
-        label_file: Optional[str] = None,
     ):
         self.model_path = model_path
         self.device = device
         self.confidence_threshold = confidence_threshold
-        self.label_file = label_file
-        self.model = None
         self.load_model()
+        self.prediction_list = None
 
     def get_image(self, img):
         """
@@ -40,12 +32,6 @@ class DetectionModel:
     def object_prediction_list(self, img):
         """
         Returns a list of predictions for the given image.
-        """
-        raise NotImplementedError
-
-    def visualization(self, img):
-        """
-        Returns a visualization of the predictions for the given image.
         """
         raise NotImplementedError
 
@@ -74,9 +60,10 @@ class Yolov5(DetectionModel):
                 )
 
         self.prediction_list = prediction_list
+        return prediction_list
 
-        
-class Torchvision(DetectionModel):
+
+class TorchVision(DetectionModel):
     def load_model(self):
         import torch
         import torchvision
@@ -105,7 +92,7 @@ class Torchvision(DetectionModel):
             prediction_list.append([prediction_boxes[i], prediction_class[i], prediction_score[i]])
         self.prediction_list = prediction_list
 
-        
+
 class TensorflowHub(DetectionModel):
     def load_model(self):
         import tensorflow as tf
@@ -115,16 +102,14 @@ class TensorflowHub(DetectionModel):
             self.model = hub.load(self.model_path)
 
     def object_prediction_list(self, image):
-        import cv2
         import tensorflow as tf
 
-        from dethub.utils.data_utils import COCO_CLASSES, resize, to_float_tensor
+        from dethub.utils.data_utils import COCO_CLASSES, to_float_tensor
 
         img = to_float_tensor(image)
 
         category_mapping = {str(i): COCO_CLASSES[i] for i in range(len(COCO_CLASSES))}
         img = to_float_tensor(image)
-        npy_img = cv2.imread(image)
         prediction_result = self.model(img)
 
         self.image_height, self.image_width = img.shape[0], img.shape[1]
