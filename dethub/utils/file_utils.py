@@ -38,7 +38,7 @@ class ModelDownload:
 
     def torchvision(destination_path: Optional[str] = None):
         TORCHVISION_MODEL_URL = "https://download.pytorch.org/models/fasterrcnn_resnet50_fpn_coco-258fb6c6.pth"
-        TORCHVISION_MODEL_PATH = "models/torchvision/fasterrcnn_resnet50_fpn.pth"
+        TORCHVISION_MODEL_PATH = "dethub/models/torchvision/fasterrcnn_resnet50_fpn.pth"
 
         if destination_path is None:
             destination_path = TORCHVISION_MODEL_PATH
