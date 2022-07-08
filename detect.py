@@ -1,11 +1,13 @@
 from dethub.model import *
 
 
-def pretrained_weights():
+def pretrained_weights(model_type):
     from dethub.utils.file_utils import ModelDownload
-
-    ModelDownload.yolov5n()
-    ModelDownload.torchvision()
+    
+    if model_type == "yolov5":
+        ModelDownload.yolov5n()
+    elif model_type == "torchvision":
+        ModelDownload.torchvision()
 
 
 def get_prediction(image, detection_model):
