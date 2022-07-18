@@ -23,10 +23,17 @@ run('tensorflow', 'https://tfhub.dev/tensorflow/efficientdet/d3/1', 'data/highwa
 ```
 <img src="doc/tensorflow.jpg" alt="TfHub" width="800">
 
-## TODO
-- [ ] Detectron2 will be added.
-- [ ] Hugging Face will be added.
-
+### Contributing
+Before opening a PR:
+- Install required development packages:
+```bash
+pip install -r requirements.txt
+```
+- Reformat with black and isort:
+```bash
+black . --config pyproject.toml
+isort .
+```
 References:
 - [SAHI](https://github.com/obss/sahi)
 - [YOLOX](https://github.com/Megvii-BaseDetection/YOLOX)

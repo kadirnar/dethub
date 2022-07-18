@@ -3,7 +3,7 @@ from dethub.model import *
 
 def pretrained_weights(model_type):
     from dethub.utils.file_utils import ModelDownload
-    
+
     if model_type == "yolov5":
         ModelDownload.yolov5n()
     elif model_type == "torchvision":
