@@ -30,3 +30,4 @@ run('tensorflow', 'https://tfhub.dev/tensorflow/efficientdet/d3/1', 'data/highwa
 References:
 - [SAHI](https://github.com/obss/sahi)
 - [YOLOX](https://github.com/Megvii-BaseDetection/YOLOX)
+- [Mcvarer](https://github.com/mcvarer/coco_toolkit)
