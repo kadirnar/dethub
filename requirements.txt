@@ -1,12 +1,23 @@
-addict==2.4.0
+# Usage: pip install -r requirements.txt
+
+# base ----------------------------------------
 gdown==4.5.1
-matplotlib==3.5.2
 numpy==1.23.1
 opencv_python==4.6.0.66
-Pillow==9.2.0
+torch==1.12.0
+
+# tensorflow ----------------------------------------
 tensorflow==2.9.1
 tensorflow_hub==0.12.0
-torch==1.12.0
+
+# torchvision ----------------------------------------
 torchvision==0.13.0
-tqdm==4.63.0
+
+# yolov5 ----------------------------------------
 yolov5==6.1.6
+
+# Coco ----------------------------------------
+addict==2.4.0
+matplotlib==3.5.2
+Pillow==9.2.0
+tqdm==4.63.0

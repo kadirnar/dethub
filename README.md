@@ -5,6 +5,12 @@ DetHub: Object Detection Model Hub
 <img src="doc/torchvision.jpg" alt="Torchvision" width="800">
 </div>
 
+### Installation
+```
+git clone https://github.com/kadirnar/dethub
+cd dethub
+pip install -r requirements.txt
+```
 ### Yolov5 Object Prediction and Visualization
 ```
 run('yolov5', 'dethub/models/yolov5/yolov5n.pt', 'data/highway1.jpg')
@@ -25,10 +31,6 @@ run('tensorflow', 'https://tfhub.dev/tensorflow/efficientdet/d3/1', 'data/highwa
 
 ### Contributing
 Before opening a PR:
-- Install required development packages:
-```bash
-pip install -r requirements.txt
-```
 - Reformat with black and isort:
 ```bash
 black . --config pyproject.toml
