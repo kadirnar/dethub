@@ -7,7 +7,7 @@ def pretrained_weights(model_type):
     if model_type == "yolov5":
         ModelDownload.yolov5n()
 
-    elif model_type == "yolov5":
+    elif model_type == "torchvision":
         ModelDownload.torchvision()
 
 
@@ -37,6 +37,9 @@ def run(
 
     elif model_type == "yolov5hub":
         detection_model = Yolov5Hub(model_path, device, confidence_threshold)
+    
+    elif model_type == "yolov7hub":
+        detection_model = Yolov7Hub(model_path, device, confidence_threshold)
 
     get_prediction(image_path, detection_model)
 
@@ -45,3 +48,4 @@ def run(
 # run("torchvision", "dethub/models/torchvision/fasterrcnn_resnet50_fpn.pth", "data/highway1.jpg")
 # run('tensorflow', 'https://tfhub.dev/tensorflow/efficientdet/d3/1', 'data/highway1.jpg')
 # run('yolov5hub', 'dethub/models/yolov5/yolov5n.pt', 'data/highway1.jpg', 'cuda:0', 0.5)
+run('yolov7hub', 'yolov7.pt', 'data/highway1.jpg', 'cpu', 0.5)
