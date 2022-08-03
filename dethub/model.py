@@ -1,6 +1,3 @@
-from importlib.resources import path
-
-
 class DetectionModel:
     def __init__(
         self,
