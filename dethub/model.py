@@ -1,3 +1,8 @@
+from importlib.resources import path
+
+from torch import device
+
+
 class DetectionModel:
     def __init__(
         self,
@@ -153,3 +158,30 @@ class TensorflowHub(DetectionModel):
                     )
         self.prediction_list = prediction_list
         return prediction_list
+
+
+class Yolov5Hub(DetectionModel):
+    def load_model(self):
+        import torch
+        model = torch.hub.load('ultralytics/yolov5', 'custom', path=self.model_path, device=self.device)
+        model.conf = self.confidence_threshold
+        self.model = model
+        
+    def object_prediction_list(self, image):
+        prediction = self.model(image)
+        prediction_list = []
+
+        for _, image_predictions_in_xyxy_format in enumerate(prediction.xyxy):
+            for pred in image_predictions_in_xyxy_format.cpu().detach().numpy():
+                x1, y1, x2, y2 = int(pred[0]), int(pred[1]), int(pred[2]), int(pred[3])
+                bbox = [x1, y1, x2, y2]
+                score = pred[4]
+                category_name = self.model.names[int(pred[5])]
+                category_id = pred[5]
+                prediction_list.append(
+                    {"bbox": bbox, "score": score, "category_name": category_name, "category_id": category_id}
+                )
+
+        self.prediction_list = prediction_list
+        return prediction_list
+

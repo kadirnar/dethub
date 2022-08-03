@@ -276,7 +276,7 @@ def vis(
         cv2.rectangle(image, (x1, y1 + 1), (x1 + txt_size[0] + 1, y1 + int(1.5 * txt_size[1])), txt_bk_color, -1)
         cv2.putText(image, text, (x1, y1 + txt_size[1]), font, 0.4, txt_color, thickness=1)
 
-    cv2.imwrite("test.jpg", image)
+    cv2.imshow("image", image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
