@@ -270,11 +270,31 @@ def vis(
         text = f"{category_name} {score:.2f}"
         font = cv2.FONT_HERSHEY_SIMPLEX
         txt_size = cv2.getTextSize(text, font, 0.4, 1)[0]
-        txt_color = (0, 0, 0) if np.mean(_COLORS[category_id]) > 0.5 else (255, 255, 255)
+        txt_color = (
+            (0, 0, 0)
+            if np.mean(_COLORS[category_id]) > 0.5
+            else (255, 255, 255)
+        )
         cv2.rectangle(image, (x1, y1), (x2, y2), color, rect_th)
-        txt_bk_color = (_COLORS[category_id] * 255 * 0.7).astype(np.uint8).tolist()
-        cv2.rectangle(image, (x1, y1 + 1), (x1 + txt_size[0] + 1, y1 + int(1.5 * txt_size[1])), txt_bk_color, -1)
-        cv2.putText(image, text, (x1, y1 + txt_size[1]), font, 0.4, txt_color, thickness=1)
+        txt_bk_color = (
+            (_COLORS[category_id] * 255 * 0.7).astype(np.uint8).tolist()
+        )
+        cv2.rectangle(
+            image,
+            (x1, y1 + 1),
+            (x1 + txt_size[0] + 1, y1 + int(1.5 * txt_size[1])),
+            txt_bk_color,
+            -1,
+        )
+        cv2.putText(
+            image,
+            text,
+            (x1, y1 + txt_size[1]),
+            font,
+            0.4,
+            txt_color,
+            thickness=1,
+        )
 
     cv2.imshow("image", image)
     cv2.waitKey(0)

@@ -21,7 +21,9 @@ def get_prediction(image, detection_model):
     vis(image, object_prediction_list)
 
 
-def run(model_type, model_path, image_path, device="cpu", confidence_threshold=0.5):
+def run(
+    model_type, model_path, image_path, device="cpu", confidence_threshold=0.5
+):
     if model_type == "yolov5":
         detection_model = Yolov5(model_path, device, confidence_threshold)
 
@@ -29,7 +31,9 @@ def run(model_type, model_path, image_path, device="cpu", confidence_threshold=0
         detection_model = TorchVision(model_path, device, confidence_threshold)
 
     elif model_type == "tensorflow":
-        detection_model = TensorflowHub(model_path, device, confidence_threshold)
+        detection_model = TensorflowHub(
+            model_path, device, confidence_threshold
+        )
 
     elif model_type == "yolov5hub":
         detection_model = Yolov5Hub(model_path, device, confidence_threshold)

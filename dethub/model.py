@@ -38,13 +38,23 @@ class Yolov5(DetectionModel):
 
         for _, image_predictions_in_xyxy_format in enumerate(prediction.xyxy):
             for pred in image_predictions_in_xyxy_format.cpu().detach().numpy():
-                x1, y1, x2, y2 = int(pred[0]), int(pred[1]), int(pred[2]), int(pred[3])
+                x1, y1, x2, y2 = (
+                    int(pred[0]),
+                    int(pred[1]),
+                    int(pred[2]),
+                    int(pred[3]),
+                )
                 bbox = [x1, y1, x2, y2]
                 score = pred[4]
                 category_name = self.model.names[int(pred[5])]
                 category_id = pred[5]
                 prediction_list.append(
-                    {"bbox": bbox, "score": score, "category_name": category_name, "category_id": category_id}
+                    {
+                        "bbox": bbox,
+                        "score": score,
+                        "category_name": category_name,
+                        "category_id": category_id,
+                    }
                 )
 
         self.prediction_list = prediction_list
@@ -56,7 +66,9 @@ class TorchVision(DetectionModel):
         import torch
         import torchvision
 
-        model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
+        model = torchvision.models.detection.fasterrcnn_resnet50_fpn(
+            pretrained=True
+        )
         model.load_state_dict(torch.load(self.model_path))
         model.eval()
         self.model = model
@@ -66,7 +78,9 @@ class TorchVision(DetectionModel):
 
         from dethub.utils.data_utils import COCO_CLASSES, numpy_to_torch
 
-        category_names = {str(i): COCO_CLASSES[i] for i in range(len(COCO_CLASSES))}
+        category_names = {
+            str(i): COCO_CLASSES[i] for i in range(len(COCO_CLASSES))
+        }
         image = numpy_to_torch(image)
         image = image.to(self.device)
         prediction = self.model([image])
@@ -79,8 +93,18 @@ class TorchVision(DetectionModel):
             selected_indices = np.where(scores > self.confidence_threshold)[0]
 
             # parse boxes, masks, scores, category_ids from predictions
-            category_ids = list(image_predictions["labels"][selected_indices].cpu().detach().numpy())
-            boxes = list(image_predictions["boxes"][selected_indices].cpu().detach().numpy())
+            category_ids = list(
+                image_predictions["labels"][selected_indices]
+                .cpu()
+                .detach()
+                .numpy()
+            )
+            boxes = list(
+                image_predictions["boxes"][selected_indices]
+                .cpu()
+                .detach()
+                .numpy()
+            )
             scores = scores[selected_indices]
             for ind in range(len(boxes)):
                 bbox = boxes[ind]
@@ -88,7 +112,12 @@ class TorchVision(DetectionModel):
                 category_name = category_names[str(int(category_ids[ind]))]
                 score = scores[ind]
                 prediction_list.append(
-                    {"bbox": bbox, "score": score, "category_name": category_name, "category_id": category_id}
+                    {
+                        "bbox": bbox,
+                        "score": score,
+                        "category_name": category_name,
+                        "category_id": category_id,
+                    }
                 )
 
         self.prediction_list = prediction_list
@@ -114,7 +143,9 @@ class TensorflowHub(DetectionModel):
         image_height, image_width = image.shape[0], image.shape[1]
         img = to_float_tensor(image)
 
-        category_mapping = {str(i): TF_COCO_CLLASES[i] for i in range(len(TF_COCO_CLLASES))}
+        category_mapping = {
+            str(i): TF_COCO_CLLASES[i] for i in range(len(TF_COCO_CLLASES))
+        }
         img = to_float_tensor(image)
         prediction_result = self.model(img)
 
@@ -137,7 +168,12 @@ class TensorflowHub(DetectionModel):
                     )
                     bbox = [x1, y1, x2, y2]
                     prediction_list.append(
-                        {"bbox": bbox, "score": score, "category_name": category_names, "category_id": category_id}
+                        {
+                            "bbox": bbox,
+                            "score": score,
+                            "category_name": category_names,
+                            "category_id": category_id,
+                        }
                     )
         self.prediction_list = prediction_list
         return prediction_list
@@ -147,7 +183,12 @@ class Yolov5Hub(DetectionModel):
     def load_model(self):
         import torch
 
-        model = torch.hub.load("ultralytics/yolov5", "custom", path=self.model_path, device=self.device)
+        model = torch.hub.load(
+            "ultralytics/yolov5",
+            "custom",
+            path=self.model_path,
+            device=self.device,
+        )
         model.conf = self.confidence_threshold
         self.model = model
 
@@ -157,13 +198,23 @@ class Yolov5Hub(DetectionModel):
 
         for _, image_predictions_in_xyxy_format in enumerate(prediction.xyxy):
             for pred in image_predictions_in_xyxy_format.cpu().detach().numpy():
-                x1, y1, x2, y2 = int(pred[0]), int(pred[1]), int(pred[2]), int(pred[3])
+                x1, y1, x2, y2 = (
+                    int(pred[0]),
+                    int(pred[1]),
+                    int(pred[2]),
+                    int(pred[3]),
+                )
                 bbox = [x1, y1, x2, y2]
                 score = pred[4]
                 category_name = self.model.names[int(pred[5])]
                 category_id = pred[5]
                 prediction_list.append(
-                    {"bbox": bbox, "score": score, "category_name": category_name, "category_id": category_id}
+                    {
+                        "bbox": bbox,
+                        "score": score,
+                        "category_name": category_name,
+                        "category_id": category_id,
+                    }
                 )
 
         self.prediction_list = prediction_list
