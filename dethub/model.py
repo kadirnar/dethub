@@ -1,8 +1,3 @@
-from importlib.resources import path
-
-from torch import device
-
-
 class DetectionModel:
     def __init__(
         self,
@@ -15,18 +10,6 @@ class DetectionModel:
         self.confidence_threshold = confidence_threshold
         self.load_model()
         self.prediction_list = None
-
-    def get_image(self, img):
-        """
-        Returns a tensor of the image.
-        """
-        raise NotImplementedError
-
-    def get_label(self):
-        """
-        Returns a list of labels for the given label file.
-        """
-        raise NotImplementedError
 
     def load_model(self):
         """
@@ -163,10 +146,11 @@ class TensorflowHub(DetectionModel):
 class Yolov5Hub(DetectionModel):
     def load_model(self):
         import torch
-        model = torch.hub.load('ultralytics/yolov5', 'custom', path=self.model_path, device=self.device)
+
+        model = torch.hub.load("ultralytics/yolov5", "custom", path=self.model_path, device=self.device)
         model.conf = self.confidence_threshold
         self.model = model
-        
+
     def object_prediction_list(self, image):
         prediction = self.model(image)
         prediction_list = []
@@ -184,4 +168,3 @@ class Yolov5Hub(DetectionModel):
 
         self.prediction_list = prediction_list
         return prediction_list
-
