@@ -80,7 +80,9 @@ def to_float_tensor(image: np.ndarray):
     float_image = np.asarray(image, np.float32)
     if image.max() <= 1:
         float_image = float_image * 255.0
-    image_tensor = tf.convert_to_tensor([np.asarray(float_image, np.uint8)], tf.uint8)
+    image_tensor = tf.convert_to_tensor(
+        [np.asarray(float_image, np.uint8)], tf.uint8
+    )
     return image_tensor
 
 
