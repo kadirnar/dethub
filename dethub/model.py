@@ -224,7 +224,7 @@ class Yolov7Hub(DetectionModel):
     def load_model(self):
         import torch
         self.model = torch.hub.load('WongKinYiu/yolov7', 'custom', self.model_path)
-    
+
     def object_prediction_list(self, image):
         prediction = self.model(image)
         prediction_list = []

@@ -37,7 +37,7 @@ def run(
 
     elif model_type == "yolov5hub":
         detection_model = Yolov5Hub(model_path, device, confidence_threshold)
-    
+
     elif model_type == "yolov7hub":
         detection_model = Yolov7Hub(model_path, device, confidence_threshold)
 
