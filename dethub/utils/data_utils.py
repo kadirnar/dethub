@@ -22,22 +22,22 @@ def torch_to_numpy(img):
 def read_image(img):
     import cv2
 
-    if type(img) == str:
+    if type(img) is str:
         img = cv2.imread(img)
 
-    elif type(img) == bytes:
+    elif type(img) is bytes:
         nparr = np.frombuffer(img, np.uint8)
         img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
-    elif type(img) == np.ndarray:
+    elif type(img) is np.ndarray:
         if len(img.shape) == 2:  # grayscale
             img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
 
-        elif len(img.shape) == 3 and img.shape[2] == 3:
+        elif len(img.shape) is 3 and img.shape[2] is 3:
             img = img
 
-        elif len(img.shape) == 3 and img.shape[2] == 4:  # RGBA
+        elif len(img.shape) is 3 and img.shape[2] is 4:  # RGBA
             img = img[:, :, :3]
 
     return img

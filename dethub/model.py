@@ -106,7 +106,7 @@ class TorchVision(DetectionModel):
                 .numpy()
             )
             scores = scores[selected_indices]
-            for ind in range(len(boxes)):
+            for ind, element in enumerate(boxes):
                 bbox = boxes[ind]
                 category_id = int(category_ids[ind])
                 category_name = category_names[str(int(category_ids[ind]))]
