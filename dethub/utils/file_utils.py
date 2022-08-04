@@ -6,11 +6,6 @@ import yaml
 
 
 class FileUtils:
-    def __init__(self, yaml_path: str, model_name: str, destination_path: str):
-        self.yaml_path = yaml_path
-        self.model_name = model_name
-        self.destination_path = destination_path
-
     """
     This function is used to download the model from the url specified in the yaml file.
     Args:
@@ -18,6 +13,10 @@ class FileUtils:
         model_name: str
         destination_path: str
     """
+    def __init__(self, yaml_path: str, model_name: str, destination_path: str):
+        self.yaml_path = yaml_path
+        self.model_name = model_name
+        self.destination_path = destination_path
 
     @staticmethod
     def download_from_url(from_url: str, to_path: str):
