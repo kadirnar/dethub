@@ -11,6 +11,7 @@ class ModelDownload:
         self.url = url
         self.model_path = model_path
 
+    @staticmethod
     def download_from_url(self, from_url: str, to_path: str):
 
         Path(to_path).parent.mkdir(parents=True, exist_ok=True)
@@ -21,6 +22,7 @@ class ModelDownload:
                 to_path,
             )
 
+    @staticmethod
     def yolov5n(self, destination_path: Optional[str] = None):
         YOLOV5N_MODEL_URL = "https://github.com/ultralytics/yolov5/releases/download/v6.0/yolov5n.pt"
         YOLOV5N_MODEL_PATH = "dethub/models/yolov5/yolov5n.pt"
@@ -38,6 +40,7 @@ class ModelDownload:
 
         return destination_path
 
+    @staticmethod
     def torchvision(self, destination_path: Optional[str] = None):
         TORCHVISION_MODEL_URL = "https://download.pytorch.org/models/fasterrcnn_resnet50_fpn_coco-258fb6c6.pth"
         TORCHVISION_MODEL_PATH = (
