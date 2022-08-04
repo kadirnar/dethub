@@ -34,9 +34,7 @@ def Visualizer(image, detection_model):
     vis(image, object_prediction_list)
 
 
-def run(
-    model_type, model_path, image_path, device="cpu", confidence_threshold=0.5
-):
+def run(model_type, model_path, image_path, device="cpu", confidence_threshold=0.5):
     """
     Run the detection model
     Args:
@@ -53,9 +51,7 @@ def run(
         detection_model = TorchVision(model_path, device, confidence_threshold)
 
     elif model_type == "tensorflow":
-        detection_model = TensorflowHub(
-            model_path, device, confidence_threshold
-        )
+        detection_model = TensorflowHub(model_path, device, confidence_threshold)
 
     elif model_type == "yolov5hub":
         detection_model = Yolov5Hub(model_path, device, confidence_threshold)

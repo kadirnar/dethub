@@ -55,8 +55,7 @@ def read_image(img):
             img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
 
         elif (
-            len(img.shape) is color_conversion["rgb"]
-            and img.shape[2] is color_conversion["rgba"]
+            len(img.shape) is color_conversion["rgb"] and img.shape[2] is color_conversion["rgba"]
         ):  # RGBA
             img = img[:, :, :3]
 
@@ -126,13 +125,11 @@ def to_float_tensor(img: np.ndarray):
     float_image = np.asarray(img, np.float32)
     if img.max() <= 1:
         float_image = float_image * 255.0
-    image_tensor = tf.convert_to_tensor(
-        [np.asarray(float_image, np.uint8)], tf.uint8
-    )
+    image_tensor = tf.convert_to_tensor([np.asarray(float_image, np.uint8)], tf.uint8)
     return image_tensor
 
 
-def tf_resize(array, size):
+def tensorflow_resize(array, size):
     """
     Resize image using tensorflow
     Args:

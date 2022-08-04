@@ -66,9 +66,7 @@ class TorchVision(DetectionModel):
         import torch
         import torchvision
 
-        model = torchvision.models.detection.fasterrcnn_resnet50_fpn(
-            pretrained=True
-        )
+        model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
         model.load_state_dict(torch.load(self.model_path))
         model.eval()
         self.model = model
@@ -78,9 +76,7 @@ class TorchVision(DetectionModel):
 
         from dethub.utils.data_utils import COCO_CLASSES, numpy_to_torch
 
-        category_names = {
-            str(i): COCO_CLASSES[i] for i in range(len(COCO_CLASSES))
-        }
+        category_names = {str(i): COCO_CLASSES[i] for i in range(len(COCO_CLASSES))}
         image = numpy_to_torch(image)
         image = image.to(self.device)
         prediction = self.model([image])
@@ -94,17 +90,9 @@ class TorchVision(DetectionModel):
 
             # parse boxes, masks, scores, category_ids from predictions
             category_ids = list(
-                image_predictions["labels"][selected_indices]
-                .cpu()
-                .detach()
-                .numpy()
+                image_predictions["labels"][selected_indices].cpu().detach().numpy()
             )
-            boxes = list(
-                image_predictions["boxes"][selected_indices]
-                .cpu()
-                .detach()
-                .numpy()
-            )
+            boxes = list(image_predictions["boxes"][selected_indices].cpu().detach().numpy())
             scores = scores[selected_indices]
             for ind, _ in enumerate(boxes):
                 bbox = boxes[ind]
@@ -143,9 +131,7 @@ class TensorflowHub(DetectionModel):
         image_height, image_width = image.shape[0], image.shape[1]
         img = to_float_tensor(image)
 
-        category_mapping = {
-            str(i): TF_COCO_CLLASES[i] for i in range(len(TF_COCO_CLLASES))
-        }
+        category_mapping = {str(i): TF_COCO_CLLASES[i] for i in range(len(TF_COCO_CLLASES))}
         img = to_float_tensor(image)
         prediction_result = self.model(img)
 
@@ -225,9 +211,7 @@ class Yolov7Hub(DetectionModel):
     def load_model(self):
         import torch
 
-        self.model = torch.hub.load(
-            "WongKinYiu/yolov7", "custom", self.model_path
-        )
+        self.model = torch.hub.load("WongKinYiu/yolov7", "custom", self.model_path)
 
     def object_prediction_list(self, image):
         prediction = self.model(image)
