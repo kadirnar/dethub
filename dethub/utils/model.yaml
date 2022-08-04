@@ -1,0 +1,7 @@
+torchvision:
+  - TORCHVISION_MODEL_URL = "https://download.pytorch.org/models/fasterrcnn_resnet50_fpn_coco-258fb6c6.pth"
+  - TORCHVISION_MODEL_PATH = "dethub/models/torchvision/fasterrcnn_resnet50_fpn.pth"
+
+yolov5:
+  - YOLOV5_MODEL_URL = "https://github.com/ultralytics/yolov5/releases/download/v6.0/yolov5n.pt"
+  - YOLOV5_MODEL_PATH = "dethub/models/yolov5/yolov5.pth"
