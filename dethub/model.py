@@ -220,10 +220,14 @@ class Yolov5Hub(DetectionModel):
         self.prediction_list = prediction_list
         return prediction_list
 
+
 class Yolov7Hub(DetectionModel):
     def load_model(self):
         import torch
-        self.model = torch.hub.load('WongKinYiu/yolov7', 'custom', self.model_path)
+
+        self.model = torch.hub.load(
+            "WongKinYiu/yolov7", "custom", self.model_path
+        )
 
     def object_prediction_list(self, image):
         prediction = self.model(image)

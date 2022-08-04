@@ -42,10 +42,3 @@ def run(
         detection_model = Yolov7Hub(model_path, device, confidence_threshold)
 
     get_prediction(image_path, detection_model)
-
-
-# run('yolov5', 'dethub/models/yolov5/yolov5n.pt', 'data/highway1.jpg')
-# run("torchvision", "dethub/models/torchvision/fasterrcnn_resnet50_fpn.pth", "data/highway1.jpg")
-# run('tensorflow', 'https://tfhub.dev/tensorflow/efficientdet/d3/1', 'data/highway1.jpg')
-# run('yolov5hub', 'dethub/models/yolov5/yolov5n.pt', 'data/highway1.jpg', 'cuda:0', 0.5)
-# run('yolov7hub', 'yolov7.pt', 'data/highway1.jpg', 'cpu', 0.5)
