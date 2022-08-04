@@ -1,6 +1,3 @@
-from curses import color_pair
-from turtle import color
-
 import numpy as np
 
 
