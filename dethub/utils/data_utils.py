@@ -41,12 +41,6 @@ def read_image(img):
 
         elif (
             len(img.shape) is color_conversion["rgb"]
-            and img.shape[2] is color_conversion["rgb"]
-        ):
-            img = img
-
-        elif (
-            len(img.shape) is color_conversion["rgb"]
             and img.shape[2] is color_conversion["rgba"]
         ):  # RGBA
             img = img[:, :, :3]
