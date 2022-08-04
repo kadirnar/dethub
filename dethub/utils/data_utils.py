@@ -1,3 +1,6 @@
+from curses import color_pair
+from turtle import color
+
 import numpy as np
 
 
@@ -22,6 +25,11 @@ def torch_to_numpy(img):
 def read_image(img):
     import cv2
 
+    color_conversion = {
+        "grayscale:": 2,
+        "rgb": 3,
+        "rgba": 4,
+    }
     if type(img) is str:
         img = cv2.imread(img)
 
@@ -31,13 +39,19 @@ def read_image(img):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     elif type(img) is np.ndarray:
-        if len(img.shape) == 2:  # grayscale
+        if len(img.shape) is color_conversion["grayscale:"]:  # grayscale
             img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
 
-        elif len(img.shape) is 3 and img.shape[2] is 3:
+        elif (
+            len(img.shape) is color_conversion["rgb"]
+            and img.shape[2] is color_conversion["rgb"]
+        ):
             img = img
 
-        elif len(img.shape) is 3 and img.shape[2] is 4:  # RGBA
+        elif (
+            len(img.shape) is color_conversion["rgb"]
+            and img.shape[2] is color_conversion["rgba"]
+        ):  # RGBA
             img = img[:, :, :3]
 
     return img
