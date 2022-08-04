@@ -11,8 +11,22 @@ class FileUtils:
         self.model_name = model_name
         self.destination_path = destination_path
 
+    """
+    This function is used to download the model from the url specified in the yaml file.
+    Args:
+        yaml_path: str
+        model_name: str
+        destination_path: str
+    """
+
     @staticmethod
     def download_from_url(from_url: str, to_path: str):
+        """
+        This function is used to download the model from the url specified in the yaml file.
+        Args:
+            from_url: str
+            to_path: str
+        """
 
         Path(to_path).parent.mkdir(parents=True, exist_ok=True)
 
@@ -23,6 +37,9 @@ class FileUtils:
             )
 
     def model_download(self):
+        """
+        This function is used to download the model from the url specified in the yaml file.
+        """
         with open(self.yaml_path, "r") as stream:
             self.model_name = yaml.safe_load(stream)["model_name"]
 

@@ -2,6 +2,11 @@ import numpy as np
 
 
 def numpy_to_torch(img):
+    """
+    Convert numpy array to torch tensor
+    Args:
+        img: numpy array
+    """
     import torch
 
     img = img.transpose((2, 0, 1))
@@ -12,6 +17,11 @@ def numpy_to_torch(img):
 
 
 def torch_to_numpy(img):
+    """
+    Convert torch tensor to numpy array
+    Args:
+        img: numpy array
+    """
     img = img.numpy()
     if img.max() > 1:
         img /= 255
@@ -20,6 +30,11 @@ def torch_to_numpy(img):
 
 
 def read_image(img):
+    """
+    Read image from path
+    Args:
+        img: numpy array
+    """
     import cv2
 
     color_conversion = {
@@ -49,6 +64,11 @@ def read_image(img):
 
 
 def create_dir(_dir):
+    """
+    Create directory if it doesn't exist
+    Args:
+        _dir: str
+    """
     import os
 
     if not os.path.exists(_dir):
@@ -56,6 +76,12 @@ def create_dir(_dir):
 
 
 def download(url: str, save_path: str):
+    """
+    Download file from url
+    Args:
+        url: str
+        save_path: str
+    """
     import os
 
     import gdown
@@ -65,6 +91,11 @@ def download(url: str, save_path: str):
 
 
 def imshow(img):
+    """
+    Display image
+    Args:
+        img: numpy array
+    """
     import cv2
 
     cv2.imshow("img", img)
@@ -72,17 +103,28 @@ def imshow(img):
     cv2.destroyAllWindows()
 
 
-def resize(array, size):
+def tf_resize(array, size):
+    """
+    Resize image using tensorflow
+    Args:
+        array: numpy array
+        size: int
+    """
     import tensorflow as tf
 
     return tf.image.resize(array, [size, size]).numpy()
 
 
-def to_float_tensor(image: np.ndarray):
+def to_float_tensor(img: np.ndarray):
+    """
+    Convert image to float tensor
+    Args:
+        image: numpy array
+    """
     import tensorflow as tf
 
-    float_image = np.asarray(image, np.float32)
-    if image.max() <= 1:
+    float_image = np.asarray(img, np.float32)
+    if img.max() <= 1:
         float_image = float_image * 255.0
     image_tensor = tf.convert_to_tensor(
         [np.asarray(float_image, np.uint8)], tf.uint8
@@ -91,6 +133,12 @@ def to_float_tensor(image: np.ndarray):
 
 
 def tf_resize(array, size):
+    """
+    Resize image using tensorflow
+    Args:
+        array: numpy array
+        size: int
+    """
     import tensorflow as tf
 
     return tf.image.resize(array, [size, size]).numpy()
