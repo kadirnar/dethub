@@ -21,7 +21,6 @@ def torch_to_numpy(img):
 
 def read_image(img):
     import cv2
-    import numpy as np
 
     if type(img) == str:
         img = cv2.imread(img)
