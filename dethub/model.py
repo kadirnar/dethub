@@ -1,4 +1,4 @@
-from typing import  Optional
+from typing import Optional
 class DetectionModel:
     def __init__(
         self,
