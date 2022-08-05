@@ -1,18 +1,18 @@
-from typing import List, Optional
+from typing import  Optional
 class DetectionModel:
     def __init__(
         self,
         model_path: str,
         device: str,
         confidence_threshold: float = 0.5,
-        yaml_file: Optional[str] = None,
+        category_mapping: Optional[str] = None,
     ):
         self.model_path = model_path
         self.device = device
         self.confidence_threshold = confidence_threshold
         self.load_model()
         self.prediction_list = None
-        self.yaml_file = yaml_file
+        self.category_mapping = category_mapping
         
     def load_model(self):
         """
@@ -78,7 +78,7 @@ class TorchVision(DetectionModel):
         import numpy as np
 
         from dethub.utils.data_utils import  numpy_to_torch, read_yaml
-        classes = read_yaml(self.yaml_file)['COCO_CLASSES']
+        classes = read_yaml(self.category_mapping)
         category_names = {str(i): classes[i] for i in range(len(classes))}
         image = numpy_to_torch(image)
         image = image.to(self.device)
@@ -134,7 +134,7 @@ class TensorflowHub(DetectionModel):
         image_height, image_width = image.shape[0], image.shape[1]
         img = to_float_tensor(image)
         
-        classes = read_yaml(self.yaml_file)['COCO_CLASSES']
+        classes = read_yaml(self.category_mapping)
         category_mapping = {str(i): classes[i] for i in range(len(classes))}
         img = to_float_tensor(image)
         prediction_result = self.model(img)
