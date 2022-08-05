@@ -2,8 +2,6 @@ import urllib.request
 from os import path
 from pathlib import Path
 
-import yaml
-
 
 class FileUtils:
     """
@@ -13,8 +11,9 @@ class FileUtils:
         model_name: str
         destination_path: str
     """
-    def __init__(self, yaml_path: str, model_name: str, destination_path: str):
-        self.yaml_path = yaml_path
+
+    def __init__(self, yaml_file: str, model_name: str, destination_path: str):
+        self.yaml_file = yaml_file
         self.model_name = model_name
         self.destination_path = destination_path
 
@@ -36,18 +35,19 @@ class FileUtils:
             )
 
     def model_download(self):
+
         """
         This function is used to download the model from the url specified in the yaml file.
         """
-        with open(self.yaml_path, "r") as stream:
-            self.model_name = yaml.safe_load(stream)["model_name"]
+        from data_utils import read_yaml
 
+        model_name = read_yaml(self.yaml_file)
         if self.destination_path is None:
-            self.destination_path = self.model_name[1]
+            self.destination_path = model_name[1]
 
         Path(self.destination_path).parent.mkdir(parents=True, exist_ok=True)
         if not path.exists(self.destination_path):
             urllib.request.urlretrieve(
-                self.model_name[0],
+                model_name[0],
                 self.destination_path,
             )

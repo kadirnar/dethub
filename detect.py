@@ -17,7 +17,7 @@ def pretrained_weights(model_type):
         ModelDownload.torchvision()
 
 
-def Visualizer(image, detection_model):
+def visualizer(image, detection_model):
     """
     Visualize the image with the bounding boxes and labels
     Args:
@@ -59,4 +59,7 @@ def run(model_type, model_path, image_path, device="cpu", confidence_threshold=0
     elif model_type == "yolov7hub":
         detection_model = Yolov7Hub(model_path, device, confidence_threshold)
 
-    Visualizer(image_path, detection_model)
+    visualizer(image_path, detection_model)
+
+
+

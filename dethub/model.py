@@ -1,16 +1,19 @@
+from typing import List, Optional
 class DetectionModel:
     def __init__(
         self,
         model_path: str,
         device: str,
         confidence_threshold: float = 0.5,
+        yaml_file: Optional[str] = None,
     ):
         self.model_path = model_path
         self.device = device
         self.confidence_threshold = confidence_threshold
         self.load_model()
         self.prediction_list = None
-
+        self.yaml_file = yaml_file
+        
     def load_model(self):
         """
         Loads the model from the path specified in the constructor.
@@ -74,9 +77,9 @@ class TorchVision(DetectionModel):
     def object_prediction_list(self, image):
         import numpy as np
 
-        from dethub.utils.data_utils import COCO_CLASSES, numpy_to_torch
-
-        category_names = {str(i): COCO_CLASSES[i] for i in range(len(COCO_CLASSES))}
+        from dethub.utils.data_utils import  numpy_to_torch, read_yaml
+        classes = read_yaml(self.yaml_file)['COCO_CLASSES']
+        category_names = {str(i): classes[i] for i in range(len(classes))}
         image = numpy_to_torch(image)
         image = image.to(self.device)
         prediction = self.model([image])
@@ -123,15 +126,16 @@ class TensorflowHub(DetectionModel):
     def object_prediction_list(self, image):
         import tensorflow as tf
 
-        from dethub.utils.data_utils import TF_COCO_CLLASES, to_float_tensor
+        from dethub.utils.data_utils import to_float_tensor, read_yaml
 
         img = to_float_tensor(image)
         prediction_result = self.model(img)
 
         image_height, image_width = image.shape[0], image.shape[1]
         img = to_float_tensor(image)
-
-        category_mapping = {str(i): TF_COCO_CLLASES[i] for i in range(len(TF_COCO_CLLASES))}
+        
+        classes = read_yaml(self.yaml_file)['COCO_CLASSES']
+        category_mapping = {str(i): classes[i] for i in range(len(classes))}
         img = to_float_tensor(image)
         prediction_result = self.model(img)
 
