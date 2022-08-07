@@ -37,11 +37,6 @@ def read_image(img):
     """
     import cv2
 
-    color_conversion = {
-        "grayscale:": 2,
-        "rgb": 3,
-        "rgba": 4,
-    }
     if type(img) is str:
         img = cv2.imread(img)
 
@@ -51,11 +46,11 @@ def read_image(img):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
 
     elif type(img) is np.ndarray:
-        if len(img.shape) is color_conversion["grayscale:"]:  # grayscale
+        if len(img.shape) is 2:  # grayscale
             img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
 
         elif (
-            len(img.shape) is color_conversion["rgb"] and img.shape[2] is color_conversion["rgba"]
+            len(img.shape) is 3 and img.shape[2] is 4
         ):  # RGBA
             img = img[:, :, :3]
 
