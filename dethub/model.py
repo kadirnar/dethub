@@ -1,4 +1,5 @@
 from typing import Optional
+from unicodedata import category
 class DetectionModel:
     def __init__(
         self,
@@ -244,3 +245,47 @@ class Yolov7Hub(DetectionModel):
 
         self.prediction_list = prediction_list
         return prediction_list
+    
+class YoloxHub(DetectionModel):
+    def load_model(self):
+        import torch
+        
+        model = torch.hub.load("Megvii-BaseDetection/YOLOX", self.model_path)
+        model = model.eval()
+        self.model = model
+    
+    def object_prediction_list(self, img):
+        from dethub.utils.data_utils import  read_yaml
+        from dethub.utils.yolox import postprocess
+        import torch, cv2
+        
+        classes = read_yaml(self.category_mapping)['COCO_CLASSES']
+        image = cv2.resize(img, (self.image_size, self.image_size))
+        image = torch.from_numpy(image).image.permute(2, 0, 1).unsqueeze(0).float()
+        
+        output = self.model(image)
+        prediction = postprocess(output, conf_thre=0.3, nms_thre=0.45, class_agnostic=False)[0]
+        prediction_list = []
+        
+        for pred in prediction.cpu().detach().numpy():
+            x1, y1, x2, y2 = (
+                int(pred[0]),
+                int(pred[1]),
+                int(pred[2]),
+                int(pred[3]),
+            )
+            bbox = [x1, y1, x2, y2]
+            score = pred[4]
+            category_id = int(pred[6])
+            category_name = classes[category_id]
+            prediction_list.append(
+                {
+                    "bbox": bbox,
+                    "score": score,
+                    "category_name": category_name,
+                    "category_id": category_id,
+                }
+            )
+        self.prediction_list = prediction_list
+        return prediction_list
+  
