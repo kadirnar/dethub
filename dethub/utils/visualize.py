@@ -289,13 +289,7 @@ def vis(
             txt_color,
             thickness=1,
         )
-
     cv2.imshow("image", image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
 
-
-def imshow(img):
-    cv2.imshow("img", img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
