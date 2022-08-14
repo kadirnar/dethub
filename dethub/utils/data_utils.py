@@ -49,9 +49,7 @@ def read_image(img):
         if len(img.shape) is 2:  # grayscale
             img = cv2.cvtColor(img, cv2.COLOR_GRAY2RGB)
 
-        elif (
-            len(img.shape) is 3 and img.shape[2] is 4
-        ):  # RGBA
+        elif len(img.shape) is 3 and img.shape[2] is 4:  # RGBA
             img = img[:, :, :3]
 
     return img

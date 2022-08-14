@@ -1,4 +1,6 @@
 from typing import Optional
+
+
 class DetectionModel:
     def __init__(
         self,
@@ -6,6 +8,8 @@ class DetectionModel:
         device: str,
         confidence_threshold: float = 0.5,
         category_mapping: Optional[str] = None,
+        image_size: Optional[int] = None,
+        config_path: Optional[str] = None,
     ):
         self.model_path = model_path
         self.device = device
@@ -13,7 +17,9 @@ class DetectionModel:
         self.load_model()
         self.prediction_list = None
         self.category_mapping = category_mapping
-        
+        self.image_size = image_size
+        self.config_path = config_path
+
     def load_model(self):
         """
         Loads the model from the path specified in the constructor.
@@ -77,7 +83,8 @@ class TorchVision(DetectionModel):
     def object_prediction_list(self, image):
         import numpy as np
 
-        from dethub.utils.data_utils import  numpy_to_torch, read_yaml
+        from dethub.utils.data_utils import numpy_to_torch, read_yaml
+
         classes = read_yaml(self.category_mapping)
         category_names = {str(i): classes[i] for i in range(len(classes))}
         image = numpy_to_torch(image)
@@ -126,14 +133,14 @@ class TensorflowHub(DetectionModel):
     def object_prediction_list(self, image):
         import tensorflow as tf
 
-        from dethub.utils.data_utils import to_float_tensor, read_yaml
+        from dethub.utils.data_utils import read_yaml, to_float_tensor
 
         img = to_float_tensor(image)
         prediction_result = self.model(img)
 
         image_height, image_width = image.shape[0], image.shape[1]
         img = to_float_tensor(image)
-        
+
         classes = read_yaml(self.category_mapping)
         category_mapping = {str(i): classes[i] for i in range(len(classes))}
         img = to_float_tensor(image)
@@ -169,48 +176,6 @@ class TensorflowHub(DetectionModel):
         return prediction_list
 
 
-class Yolov5Hub(DetectionModel):
-    def load_model(self):
-        import torch
-
-        model = torch.hub.load(
-            "ultralytics/yolov5",
-            "custom",
-            path=self.model_path,
-            device=self.device,
-        )
-        model.conf = self.confidence_threshold
-        self.model = model
-
-    def object_prediction_list(self, image):
-        prediction = self.model(image)
-        prediction_list = []
-
-        for _, image_predictions_in_xyxy_format in enumerate(prediction.xyxy):
-            for pred in image_predictions_in_xyxy_format.cpu().detach().numpy():
-                x1, y1, x2, y2 = (
-                    int(pred[0]),
-                    int(pred[1]),
-                    int(pred[2]),
-                    int(pred[3]),
-                )
-                bbox = [x1, y1, x2, y2]
-                score = pred[4]
-                category_name = self.model.names[int(pred[5])]
-                category_id = pred[5]
-                prediction_list.append(
-                    {
-                        "bbox": bbox,
-                        "score": score,
-                        "category_name": category_name,
-                        "category_id": category_id,
-                    }
-                )
-
-        self.prediction_list = prediction_list
-        return prediction_list
-
-
 class Yolov7Hub(DetectionModel):
     def load_model(self):
         import torch
@@ -242,5 +207,65 @@ class Yolov7Hub(DetectionModel):
                     }
                 )
 
+        self.prediction_list = prediction_list
+        return prediction_list
+
+
+class YoloXHub(DetectionModel):
+    def load_model(self):
+        import torch
+
+        model = torch.hub.load(
+            "Megvii-BaseDetection/YOLOX",
+            "yolox_custom",
+            ckpt_path=self.model_path,
+            exp_path=self.config_path,
+            device=self.device,
+        )
+        model = model.eval()
+        self.model = model
+
+    def object_prediction_list(self, image):
+        import torch
+
+        from dethub.utils.yolox import COCO_CLASSES, postprocess, preproc
+
+        if self.category_mapping is None:
+            category_names = {str(i): COCO_CLASSES[i] for i in range(len(COCO_CLASSES))}
+            category_mapping = category_names
+
+        if self.image_size is not None:
+            ratio = min(self.image_size / image.shape[0], self.image_size / image.shape[1])
+            img, _ = preproc(image, input_size=(self.image_size, self.image_size))
+            img = torch.from_numpy(img).to(self.device).unsqueeze(0).float()
+        else:
+            manuel_size = 640
+            ratio = min(manuel_size / image.shape[0], manuel_size / image.shape[1])
+            img, _ = preproc(image, input_size=(manuel_size, manuel_size))
+            img = torch.from_numpy(img).to(self.device).unsqueeze(0).float()
+
+        prediction_result = self.model(img)
+        prediction_list = []
+
+        prediction_result = postprocess(
+            prediction_result,
+            conf_thre=self.confidence_threshold,
+            nms_thre=0.35,
+            class_agnostic=False,
+        )[0]
+        for prediction in prediction_result.cpu().detach().numpy():
+            bbox = prediction[0:4]
+            bbox /= ratio
+            score = prediction[4] * prediction[5]
+            category_id = int(prediction[6])
+            category_name = category_mapping[str(category_id)]
+            prediction_list.append(
+                {
+                    "bbox": bbox,
+                    "score": score,
+                    "category_name": category_name,
+                    "category_id": category_id,
+                }
+            )
         self.prediction_list = prediction_list
         return prediction_list

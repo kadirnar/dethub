@@ -53,13 +53,10 @@ def run(model_type, model_path, image_path, device="cpu", confidence_threshold=0
     elif model_type == "tensorflow":
         detection_model = TensorflowHub(model_path, device, confidence_threshold)
 
-    elif model_type == "yolov5hub":
-        detection_model = Yolov5Hub(model_path, device, confidence_threshold)
+    elif model_type == "YoloXHub":
+        detection_model = YoloXHub(model_path, device, confidence_threshold)
 
     elif model_type == "yolov7hub":
         detection_model = Yolov7Hub(model_path, device, confidence_threshold)
 
     visualizer(image_path, detection_model)
-
-
-
