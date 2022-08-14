@@ -229,10 +229,10 @@ class YoloXHub(DetectionModel):
         import torch
 
         from dethub.utils.yolox import COCO_CLASSES, postprocess, preproc
+        from dethub.utils.data_utils import numpy_to_torch, read_yaml
 
-        if self.category_mapping is None:
-            category_names = {str(i): COCO_CLASSES[i] for i in range(len(COCO_CLASSES))}
-            category_mapping = category_names
+        classes = read_yaml(self.category_mapping)
+        category_names = {str(i): classes[i] for i in range(len(classes))}
 
         if self.image_size is not None:
             ratio = min(self.image_size / image.shape[0], self.image_size / image.shape[1])
@@ -258,7 +258,7 @@ class YoloXHub(DetectionModel):
             bbox /= ratio
             score = prediction[4] * prediction[5]
             category_id = int(prediction[6])
-            category_name = category_mapping[str(category_id)]
+            category_name = category_names[str(category_id)]
             prediction_list.append(
                 {
                     "bbox": bbox,
