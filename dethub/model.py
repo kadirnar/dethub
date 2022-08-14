@@ -42,7 +42,7 @@ class Yolov5(DetectionModel):
         self.model = model
 
     def object_prediction_list(self, image):
-        prediction = self.model(image)
+        prediction = self.model(image, size=self.image_size)
         prediction_list = []
 
         for _, image_predictions_in_xyxy_format in enumerate(prediction.xyxy):
